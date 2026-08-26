@@ -1,0 +1,6 @@
+{
+  "name": "SocialWave SMM Panel",
+  "description": "Full-featured Social Media Marketing (SMM) management panel with customer and admin dashboards, dynamic UPI QR payments, automated order workflow, coupon engine, printable invoices, and API integrations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
