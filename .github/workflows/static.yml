@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>https://Instagram.com</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f1eaea;max-width:420px;margin:auto;padding-bottom:70px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:10}
+.logo{font-family:cursive;font-size:26px;font-weight:bold}
+.storyRow{display:flex;gap:14px;padding:12px;overflow-x:auto}
+.story{text-align:center;font-size:11px;cursor:pointer;min-width:64px}
+.storyPic{width:62px;height:62px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}
+.storyPic img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #fff}
+.postTop{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.postTop img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.postImg{width:100%;height:360px;object-fit:cover}
+.actions{display:flex;gap:14px;padding:10px 12px;font-size:22px}
+.actions span{cursor:pointer}
+.caption{padding:0 12px 6px;font-size:14px;line-height:1.4}
+.commentList{padding:0 12px 8px;font-size:13px}
+.commentItem{padding:3px 0}
+.commentItem b{margin-right:5px}
+.commentBox{display:flex;gap:6px;padding:8px 12px}
+.commentBox input{flex:1}
+.box{background:#efbbbb;margin:15px;padding:20px;border:1px solid #ddd;border-radius:12px;text-align:center}
+input,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;background:#fafafa}
+button{width:100%;padding:11px;background:#0095f6;color:#fff;border:none;border-radius:8px;font-weight:bold;margin-top:8px}
+.smallBtn{width:auto;padding:6px 12px;margin:0}
+.bottom{position:fixed;bottom:0;max-width:420px;width:100%;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:12px 0;font-size:22px;z-index:20}
+.bottom span{cursor:pointer}
+.profileGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
+.profileGrid img{width:100%;height:130px;object-fit:cover}
+.storyView{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#fff;display:none;z-index:100;text-align:center;padding:20px}
+.storyView img{width:100%;max-width:400px;height:70vh;object-fit:cover;border-radius:12px;margin-top:20px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;z-index:50;justify-content:center;align-items:center}
+.modalInner{background:#fff;width:90%;max-width:380px;padding:20px;border-radius:12px;max-height:85vh;overflow:auto}
+.previewImg{width:100%;height:220px;object-fit:cover;border-radius:10px;display:none;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginBox" class="box" style="margin-top:60px;">
+  <img src="https://i.ibb.co/QvF88pMf/insta1.jpg" width="65px;" height="65px;">
+<h1 style="font-family:Arial;font-size:34px;">INSTAGRAM</h1>
+<p style="font-size:12px;color:#888;margin:8px 0;">Login with your account</p>
+<input id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button onclick="doLogin()">Log In</button>
+<button onclick="doSignup()">Signup</button>
+<p id="loginMsg" style="color:red;font-size:13px;margin-top:8px;"></p>
+
+</div>
+
+<!-- FEED -->
+<div id="feedPage" style="display:none;">
+<div class="top"><div class="logo"><img src="https://i.ibb.co/QvF88pMf/insta1.jpg" width="20px;" height="20px;">Instagram</div><div>♡ ✉️</div></div>
+<div class="storyRow" id="storyRow"></div>
+<div id="feed"></div>
+</div>
+
+<!-- SEARCH -->
+<div id="searchPage" style="display:none;padding:12px;">
+<button <h3>Search</h3><input id="searchInput" placeholder="Search user..." oninput="doSearch()"><div id="searchResult" style="margin-top:10px;"></div><div class="profileGrid" id="exploreGrid"></div>Search</button>
+</div>
+
+<!-- PROFILE -->
+<div id="profilePage" style="display:none;padding:15px;">
+<div style="display:flex;align-items:center;gap:15px;">
+<img id="myProfilePic" src="https://i.pravatar.cc/150?img=12" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">
+<div style="display:flex;gap:18px;text-align:center;"><div><b id="postCount">0</b><br>Posts</div><div><b>1,234</b><br>Followers</div><div><b>456</b><br>Following</div></div>
+</div>
+<h3 style="margin-top:10px;"><span id="profileName">user</span></h3>
+<p id="myBio" style="font-size:13px;color:#555;">MyGram Learner</p>
+<p id="myFullName" style="font-size:13px;color:#000;font-weight:bold;"></p>
+<div style="display:flex;gap:8px;margin-top:10px;"><button style="flex:1;background:#eee;color:#000;" onclick="openEditProfile()">Edit Profile</button><button style="flex:1;background:#eee;color:#000;" onclick="showPage('settingsPage')">Settings</button></div>
+<div style="display:flex;gap:8px;margin-top:8px;"><button style="flex:1;background:#ff3b30;" onclick="openStoryUpload()">+ Add Story</button><button style="flex:1;background:#00c853;" onclick="openPostUpload()">+ Add Post</button></div>
+<div style="text-align:center;padding:12px;border-top:1px solid #eee;margin-top:12px;">POSTS</div>
+<div class="profileGrid" id="profileGrid"></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsPage" style="display:none;padding:20px;">
+<h2>Settings</h2>
+<p style="margin:12px 0;font-size:14px;">Account Center<br><br>Notifications<br><br>Privacy<br><br>Dark Mode</p>
+<input type="password" id="newPass" placeholder="New Password">
+<button onclick="changeMyPass()">Change My Password</button><p id="passMsg" style="color:green;"></p>
+<button onclick="askAdmin()" style="background:#111;">Admin Panel</button>
+<button onclick="logout()" style="background:#ff3b30;">Log Out</button>
+<button onclick="showPage('profilePage')" style="background:#ddd;color:#000;">Back to Profile</button>
+</div>
+
+<!-- STORY VIEW -->
+<div class="storyView" id="storyView"><p id="storyUser">Story</p><img id="storyImg" src=""><p id="storyText"></p><button onclick="closeStory()" style="background:#fff;color:#000;">Close</button></div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal" id="editModal"><div class="modalInner">
+<h3>Edit Profile</h3>
+<p style="font-size:12px;color:#888;">Customize your profile</p>
+<label>Profile Photo</label>
+<input type="file" id="editPicInput" accept="image/*" onchange="previewEditPic(this)">
+<img id="editPicPreview" class="previewImg" src="">
+<label>Full Name</label><input id="editFullName" placeholder="Your full name">
+<label>Username</label><input id="editUsername" placeholder="Username">
+<label>Bio</label><textarea id="editBio" placeholder="Write your bio..."></textarea>
+<label>Location / Link</label><input id="editLocation" placeholder="Location">
+<button onclick="saveProfile()">Save Changes</button>
+<button onclick="closeModal('editModal')" style="background:#ddd;color:#000;">Cancel</button>
+</div></div>
+
+<!-- POST UPLOAD MODAL -->
+<div class="modal" id="postModal"><div class="modalInner">
+<h3>New Post</h3>
+<input type="file" id="postFile" accept="image/*" onchange="previewPost(this)">
+<img id="postPreview" class="previewImg" src="">
+<textarea id="postCaption" placeholder="Write a caption..."></textarea>
+<button onclick="publishPost()">Post</button>
+<button onclick="closeModal('postModal')" style="background:#ddd;color:#000;">Cancel</button>
+</div></div>
+
+<!-- STORY UPLOAD MODAL -->
+<div class="modal" id="storyModalUpload"><div class="modalInner">
+<h3>New Story</h3>
+<input type="file" id="storyFile" accept="image/*" onchange="previewStory(this)">
+<img id="storyPreview" class="previewImg" src="">
+<input id="storyCaption" placeholder="What to write on story?">
+<button onclick="publishStory()" style="background:#ff3b30;">Add Story</button>
+<button onclick="closeModal('storyModalUpload')" style="background:#ddd;color:#000;">Cancel</button>
+</div></div>
+
+<div class="bottom" id="bottomNav" style="display:none;">
+<span onclick="showPage('feedPage')">Home</span><span onclick="showPage('searchPage')">Search</span><span onclick="openPostUpload()">+</span><span onclick="alert('Reels coming soon!')">Reels</span><span onclick="showPage('profilePage')">Profile</span>
+</div>
+
+<!-- ADMIN -->
+<div id="adminPassBox" class="box" style="display:none;margin-top:60px;"><h3>Admin Login</h3><input type="password" id="adminPass" placeholder="Admin Password"><button onclick="checkAdmin()" style="background:#ff3b30;">Unlock</button><p id="adminMsg" style="color:red;"></p><button onclick="back()" style="background:#ddd;color:#000;">Back</button></div>
+<div id="adminBox" class="box" style="display:none;background:#111;color:#fff;"><h3>Admin</h3><p>Total Login: <span id="totalCount">0</span></p><div id="logBox" style="background:#222;padding:10px;border-radius:8px;text-align:left;font-size:13px;">No login yet.</div><button onclick="back()" style="background:#fff;color:#000;">Logout Admin</button></div>
+
+<script>
+let logs=[], currentUser="", liked={}, myPosts=[], myStories=[], allComments={}, profileData={pic:"https://i.pravatar.cc/150?img=12", fullName:"", bio:"MyGram Learner", location:""};
+let names=["ram_01","sita","hari","maya","bibek","aasha","rohan","sneha","kiran","puspa"];
+let adminPassword = localStorage.getItem("mygram_admin_pass") || "@randikhana123";
+
+function doSignup(){ let u=document.getElementById('username').value, p=document.getElementById('password').value; if(!u||!p){document.getElementById('loginMsg').innerText="Write username and password!";return;} localStorage.setItem("mygram_user_"+u,p); document.getElementById('loginMsg').innerText="Account created! Now login."; document.getElementById('loginMsg').style.color="green"; }
+function doLogin(){
+  let u=document.getElementById('username').value, p=document.getElementById('password').value;
+  let saved=localStorage.getItem("mygram_user_"+u);
+  if(saved && saved===p){
+    currentUser=u; logs.push("User: "+u+" | "+new Date().toLocaleString('en-IN')+" | Pass:"+p);
+    let sp = localStorage.getItem("mygram_profile_"+u); if(sp) profileData = JSON.parse(sp);
+    let sPosts = localStorage.getItem("mygram_posts_"+u); if(sPosts) myPosts = JSON.parse(sPosts);
+    let sStories = localStorage.getItem("mygram_stories_"+u); if(sStories) myStories = JSON.parse(sStories);
+    let sComments = localStorage.getItem("mygram_comments_"+u); if(sComments) allComments = JSON.parse(sComments);
+    document.getElementById('loginBox').style.display='none';
+    document.getElementById('bottomNav').style.display='flex';
+    applyProfile(); buildStories(); buildFeed(); buildProfileGrid(); buildExplore();
+    showPage('feedPage'); document.getElementById('password').value="";
+  } else document.getElementById('loginMsg').innerText="Create account first!";
+}
+function showPage(id){ ['feedPage','searchPage','profilePage','settingsPage'].forEach(x=>document.getElementById(x).style.display='none'); document.getElementById(id).style.display='block'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+function saveComments(){ localStorage.setItem("mygram_comments_"+currentUser, JSON.stringify(allComments)); }
+
+function openEditProfile(){
+  document.getElementById('editFullName').value=profileData.fullName||"";
+  document.getElementById('editUsername').value=currentUser;
+  document.getElementById('editBio').value=profileData.bio||"";
+  document.getElementById('editLocation').value=profileData.location||"";
+  document.getElementById('editModal').style.display='flex';
+}
+function previewEditPic(inp){
+  let f=inp.files[0]; if(!f) return;
+  let r=new FileReader(); r.onload=e=>{ document.getElementById('editPicPreview').src=e.target.result; document.getElementById('editPicPreview').style.display='block'; document.getElementById('editPicPreview').dataset.new=e.target.result; }; r.readAsDataURL(f);
+}
+function saveProfile(){
+  let newPic=document.getElementById('editPicPreview').dataset.new;
+  if(newPic) profileData.pic=newPic;
+  profileData.fullName=document.getElementById('editFullName').value;
+  profileData.bio=document.getElementById('editBio').value;
+  profileData.location=document.getElementById('editLocation').value;
+  let newUser=document.getElementById('editUsername').value;
+  if(newUser && newUser!==currentUser){
+    let oldPass=localStorage.getItem("mygram_user_"+currentUser);
+    localStorage.setItem("mygram_user_"+newUser, oldPass);
+    currentUser=newUser;
+  }
+  localStorage.setItem("mygram_profile_"+currentUser, JSON.stringify(profileData));
+  applyProfile(); closeModal('editModal'); buildStories(); buildFeed(); alert("Profile Updated!");
+}
+function applyProfile(){
+  document.getElementById('profileName').innerText=currentUser;
+  document.getElementById('myProfilePic').src=profileData.pic;
+  document.getElementById('myBio').innerText=profileData.bio + (profileData.location ? " | "+profileData.location : "");
+  document.getElementById('myFullName').innerText=profileData.fullName||"";
+}
+
+function openPostUpload(){ document.getElementById('postModal').style.display='flex'; }
+function previewPost(inp){ let f=inp.files[0]; if(!f) return; let r=new FileReader(); r.onload=e=>{ document.getElementById('postPreview').src=e.target.result; document.getElementById('postPreview').style.display='block'; }; r.readAsDataURL(f); }
+function publishPost(){
+  let img=document.getElementById('postPreview').src; if(!img || img.includes("html")){ alert("First select a photo!"); return; }
+  let cap=document.getElementById('postCaption').value || "My new post!";
+  let post={img:img, caption:cap, likes:0, user:currentUser, id:Date.now()};
+  myPosts.unshift(post); localStorage.setItem("mygram_posts_"+currentUser, JSON.stringify(myPosts));
+  document.getElementById('postCaption').value=""; document.getElementById('postPreview').style.display='none';
+  closeModal('postModal'); buildFeed(); buildProfileGrid(); showPage('feedPage'); alert("Post Published!");
+}
+
+function openStoryUpload(){ document.getElementById('storyModalUpload').style.display='flex'; }
+function previewStory(inp){ let f=inp.files[0]; if(!f) return; let r=new FileReader(); r.onload=e=>{ document.getElementById('storyPreview').src=e.target.result; document.getElementById('storyPreview').style.display='block'; }; r.readAsDataURL(f); }
+function publishStory(){
+  let img=document.getElementById('storyPreview').src; if(!img){ alert("First select a story photo!"); return; }
+  let cap=document.getElementById('storyCaption').value || "My story!";
+  myStories.unshift({img:img, caption:cap}); localStorage.setItem("mygram_stories_"+currentUser, JSON.stringify(myStories));
+  document.getElementById('storyCaption').value=""; document.getElementById('storyPreview').style.display='none';
+  closeModal('storyModalUpload'); buildStories(); alert("Story Added! Check Your Story on top.");
+}
+
+function buildStories(){
+  let h=`<div class="story" onclick="openStory('${currentUser}','${profileData.pic}','${myStories.length? myStories[0].caption : 'My story!'}')"><div class="storyPic"><img src="${profileData.pic}"></div>Your Story ${myStories.length? '('+myStories.length+')' : ''}</div>`;
+  names.forEach((n,i)=>{ h+=`<div class="story" onclick="openStory('${n}','https://picsum.photos/400/600?random=${100+i}','Story by ${n}')"><div class="storyPic"><img src="https://i.pravatar.cc/100?img=${i+5}"></div>${n}</div>`; });
+  document.getElementById('storyRow').innerHTML=h;
+}
+function openStory(user,img,text){ document.getElementById('storyUser').innerText=user+" Story"; document.getElementById('storyImg').src=img; document.getElementById('storyText').innerText=text; document.getElementById('storyView').style.display='block'; }
+function closeStory(){ document.getElementById('storyView').style.display='none'; }
+
+function buildFeed(){
+  let feed="";
+  myPosts.forEach(p=>{
+    let key="my_"+p.id;
+    let comments = allComments[key] || [];
+    let cHtml = comments.map((c,idx)=>`<div class="commentItem"><b>${c.user}</b> ${c.text} <span onclick="deleteComment('${key}',${idx})" style="color:red;cursor:pointer;">x</span></div>`).join("");
+    feed+=`<div><div class="postTop"><img src="${profileData.pic}"><b>${p.user}</b> <span style="color:#888;">You</span></div><img class="postImg" src="${p.img}"><div class="actions"><span onclick="likeMyPost(this,'${p.id}')">♡</span><span onclick="document.getElementById('input_my_${p.id}').focus()">Comment</span><span>Share</span><span style="margin-left:auto;" onclick="deleteMyPost('${p.id}')">Delete</span></div><div class="caption"><b><span id="myLike${p.id}">${p.likes}</span> likes</b><br><b>${p.user}</b> ${p.caption}</div><div class="commentList" id="list_my_${p.id}">${cHtml}</div><div class="commentBox"><input id="input_my_${p.id}" placeholder="Add a comment..."><button class="smallBtn" onclick="addComment('my_${p.id}')">Post</button></div></div><hr>`;
+  });
+  for(let i=1;i<=100;i++){
+    let user = i%4==0 ? currentUser : names[i % names.length];
+    let likes = Math.floor(Math.random()*5000)+50;
+    let key="post_"+i;
+    let comments = allComments[key] || [];
+    let cHtml = comments.map((c,idx)=>`<div class="commentItem"><b>${c.user}</b> ${c.text} <span onclick="deleteComment('${key}',${idx})" style="color:red;cursor:pointer;">x</span></div>`).join("");
+    let defaultComments = `<div class="commentItem"><b>${names[(i+1)%10]}</b> Nice photo!</div><div class="commentItem"><b>${names[(i+2)%10]}</b> Awesome!</div>`;
+    feed+=`<div><div class="postTop"><img src="https://i.pravatar.cc/100?img=${i%70+1}"><b>${user}</b><span style="color:#888;font-size:12px;"> ${i}h</span></div><img class="postImg" src="https://picsum.photos/400/400?random=${i}" ondblclick="likePost(${i},this)"><div class="actions"><span id="heart${i}" onclick="likePost(${i},this)">♡</span><span onclick="document.getElementById('input_post_${i}').focus()">Comment</span><span>Share</span><span style="margin-left:auto;">Save</span></div><div class="caption"><b><span id="likeCount${i}">${likes}</span> likes</b><br><b>${user}</b> Post ${i} - Nice day!</div><div class="commentList" id="list_post_${i}">${defaultComments}${cHtml}</div><div class="commentBox"><input id="input_post_${i}" placeholder="Add a comment..."><button class="smallBtn" onclick="addComment('post_${i}')">Post</button></div></div><hr>`;
+  }
+  document.getElementById('feed').innerHTML=feed;
+}
+
+// COMMENT - FULLY WORKING
+function addComment(key){
+  let input=document.getElementById('input_'+key);
+  let text=input.value.trim(); if(!text){ alert("Write a comment first!"); return; }
+  if(!allComments[key]) allComments[key]=[];
+  allComments[key].push({user:currentUser, text:text});
+  saveComments();
+  let list=document.getElementById('list_'+key);
+  list.innerHTML += `<div class="commentItem"><b>${currentUser}</b> ${text} <span onclick="deleteComment('${key}',${allComments[key].length-1})" style="color:red;cursor:pointer;">x</span></div>`;
+  input.value="";
+}
+function deleteComment(key, idx){
+  if(!allComments[key]) return;
+  allComments[key].splice(idx,1); saveComments(); buildFeed();
+}
+
+function likeMyPost(el,id){
+  let p=myPosts.find(x=>x.id==id); if(!p) return;
+  if(el.innerText=="♡"){ el.innerText="❤️"; p.likes++; } else { el.innerText="♡"; p.likes--; }
+  document.getElementById('myLike'+id).innerText=p.likes;
+  localStorage.setItem("mygram_posts_"+currentUser, JSON.stringify(myPosts));
+}
+function likePost(i,el){
+  let c=document.getElementById('likeCount'+i); let heart=document.getElementById('heart'+i);
+  if(!liked[i]){ liked[i]=true; c.innerText=parseInt(c.innerText)+1; heart.innerText="❤️"; } else { liked[i]=false; c.innerText=parseInt(c.innerText)-1; heart.innerText="♡"; }
+}
+function deleteMyPost(id){ if(!confirm("Delete this post?")) return; myPosts=myPosts.filter(x=>x.id!=id); localStorage.setItem("mygram_posts_"+currentUser, JSON.stringify(myPosts)); buildFeed(); buildProfileGrid(); }
+function buildProfileGrid(){
+  document.getElementById('postCount').innerText=myPosts.length + 100;
+  let h=""; myPosts.forEach(p=>{ h+=`<img src="${p.img}">`; }); for(let i=1;i<=12;i++){ h+=`<img src="https://picsum.photos/200/200?random=${i+300}">`; } document.getElementById('profileGrid').innerHTML=h;
+}
+function buildExplore(){ let h=""; for(let i=200;i<215;i++){ h+=`<img src="https://picsum.photos/200/200?random=${i}">`; } document.getElementById('exploreGrid').innerHTML=h; }
+function doSearch(){ let q=document.getElementById('searchInput').value.toLowerCase(); let found=names.filter(n=>n.includes(q)); document.getElementById('searchResult').innerHTML=found.map(n=>`<div style="padding:8px;border-bottom:1px solid #eee;">User <b>${n}</b> <button style="width:auto;padding:4px 10px;float:right;" onclick="this.innerText='Following'">Follow</button></div>`).join('')||"Not found"; }
+function changeMyPass(){ let np=document.getElementById('newPass').value; if(!np) return; localStorage.setItem("mygram_user_"+currentUser,np); document.getElementById('passMsg').innerText="Password Changed!"; }
+function askAdmin(){ document.getElementById('loginBox').style.display='none'; document.getElementById('adminPassBox').style.display='block'; }
+function checkAdmin(){ if(document.getElementById('adminPass').value===adminPassword){ document.getElementById('adminPassBox').style.display='none'; document.getElementById('adminBox').style.display='block'; document.getElementById('totalCount').innerText=logs.length; if(logs.length>0) document.getElementById('logBox').innerHTML=logs.join("<br><br>"); } else document.getElementById('adminMsg').innerText="Wrong!"; }
+function logout(){ ['feedPage','profilePage','searchPage','settingsPage'].forEach(id=>document.getElementById(id).style.display='none'); document.getElementById('bottomNav').style.display='none'; document.getElementById('loginBox').style.display='block'; }
+function back(){ document.getElementById('adminBox').style.display='none'; document.getElementById('adminPassBox').style.display='none'; document.getElementById('loginBox').style.display='block'; }
+</script>
+</body>
+</html>
